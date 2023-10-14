@@ -1,0 +1,122 @@
+#!/bin/bash
+
+KERNEL_LOCATION=/firecracker/kernel
+FILESYSTEM_LOCATION=/firecracker/fs
+CONFIG_LOCATION=/firecracker/configs
+
+download_kernel() {
+    print_message "🐧️ Downloading Linux kernel binary..."
+    curl -fsSL -o $KERNEL_LOCATION/kernel.bin https://s3.amazonaws.com/spec.ccfc.min/img/hello/kernel/hello-vmlinux.bin
+    print_message "✅ Kernel binary has downloaded and been written to $KERNEL_LOCATION"
+}
+
+# Creates the ext4 filesystem for the VM
+# You can think of this similar to a Docker image - which is what we build the fs from!
+create_fs() {
+    print_message "💿 Preparing filesystem preparation..."
+    . $PWD/fs/fs.sh
+}
+
+install_docker() {
+    print_message "🐋 Installing Docker... This might take a while as we will setup all dependencies"
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) \
+    stable"
+
+    sudo apt-get update
+    sudo apt-get install \
+        bison \
+        build-essential \
+        flex \
+        git \
+        libelf-dev \
+        libncurses5-dev \
+        libssl-dev -y
+
+    sudo apt-get install \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg-agent \
+        software-properties-common -y
+
+    sudo apt-get install \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io -y
+    sudo groupadd docker # this may report that the group already exists
+    sudo usermod -aG docker $USER
+
+    print_message "✅ Docker has been installed succcessfully"
+}
+
+# Generates the Firecracker configuration file
+setup_cfg() {
+    source $PWD/config/launch.sh
+    gen_config
+    print_message "✅ Configuration JSON written to $CONFIG_LOCATION/alpine-config.json"
+}
+
+# Puts Firecracker on path
+install_fc() {
+    print_message "🔥 Beginning Firecracker installation"
+    source $PWD/installer/install_fc.sh
+    install
+    print_message "✅ Firecracker successfully installed onto your PATH (/usr/bin/firecracker)"
+}
+
+run_fc() {
+    print_message "🔥 Preparing to run Firecracker..."
+    print_message "If this step fails, then just remove the socket and re-run..."
+    firecracker --no-api --config-file $CONFIG_LOCATION/alpine-config.json 
+    print_message "✅ Firecracker running!"
+}
+
+display_menu() {
+    echo "🧙🔥 Firecracker Setup Wizard"
+    echo ""
+    echo "1) Download Linux kernel binary"
+    echo "2) Install Firecracker"
+    echo "3) Install Docker"
+    echo "4) Setup Firecracker filesystem"
+    echo "5) Setup Firecracker config JSON"
+    echo "6) Run Firecracker"
+    echo "7) Exit"
+}
+
+print_message() {
+    local message=$1
+    local len=${#message}
+    local dashes=$(printf '%*s' "$len" | tr ' ' '-')
+
+    echo "$dashes"
+    echo "$message"
+    echo "$dashes"
+}
+
+check_root() {
+    if [ "$(id -u)" != "0" ]; then
+        print_message "👋 This script must be run as root!"
+        exit 1
+    fi
+}
+
+clear
+mkdir -p /firecracker/{kernel,fs,configs,releases}
+while true; do
+    check_root
+    display_menu
+    read -p "Pick a number ➡️ " choice
+    case $choice in
+        1) download_kernel ;;
+        2) install_fc ;;
+        3) install_docker ;;
+        4) create_fs ;;
+        5) setup_cfg ;;
+        6) run_fc ;;
+        7) break ;;
+        *) echo "Invalid option, please try again." ;;
+    esac
+done
