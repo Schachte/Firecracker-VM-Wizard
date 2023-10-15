@@ -1,10 +1,22 @@
-# Firecracker MicroVM Wizard
+# 🔥🧙 Firecracker MicroVM Wizard
 
 Simplifying the Firecracker VM setup process. Inspired by [gruchalski](https://gruchalski.com/).
 
+---
+
 [![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=ed8d462f1268&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
 
-I'm testing Firecracker micro-VMs on Digital Ocean. If you feel my scripts have simplified your development, feel free to use my DO referral link above. 
+_If my work is helpful to you, please consider using my Digital Ocean referral code above for DO credit_
+
+# Table of contents
+
+- [Usage](#usage)
+- [Setting up Firecracker from scratch on Linux](#setting-up-firecracker-from-scratch-on-linux)
+  - [Basic setup & pre-reqs](#basic-setup--pre-reqs)
+  - [Configuring your custom image](#configuring-your-custom-image)
+  - [Generate the VM configuration details](#generate-the-vm-configuration-details)
+  - [Run the MVM](#run-the-mvm)
+- [Accessing the machine via SSH](#accessing-the-machine-via-ssh)
 
 # Usage
 
