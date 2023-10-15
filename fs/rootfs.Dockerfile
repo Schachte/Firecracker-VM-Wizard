@@ -20,4 +20,5 @@ RUN chown -R alpine:alpine /home/alpine \
 	&& chmod 0400 /home/alpine/.ssh/authorized_keys \
 	&& mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
-	&& rc-update add sshd
+	&& rc-update add sshd \
+        && echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config
