@@ -80,3 +80,25 @@ ssh -i ~/.ssh/hacker alpine@172.16.0.2
 ```
 
 You can change the details of the key name in `fs/fs.sh` and the user login username via the Dockerfile in `fs/rootfs.Dockerfile`
+
+```sh
+root@vm:~# ssh -i ~/.ssh/hacker alpine@172.16.0.2
+
+The authenticity of host '172.16.0.2 (172.16.0.2)' can't be established.
+ED25519 key fingerprint is SHA256:0vI9w7kxgB8hX/J3N5jRWXo5CNxlmryoGYTQEpGpOoI.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+
+Warning: Permanently added '172.16.0.2' (ED25519) to the list of known hosts.
+Welcome to Alpine!
+
+The Alpine Wiki contains a large amount of how-to guides and general
+information about administrating Alpine systems.
+See <http://wiki.alpinelinux.org/>.
+
+You can setup the system with the command: setup-alpine
+
+You may change this message by editing /etc/motd.
+
+172:~$
+```
