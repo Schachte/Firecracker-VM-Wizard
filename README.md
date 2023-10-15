@@ -41,7 +41,9 @@ Pick a number ➡️
 
 # Setting up Firecracker from scratch on Linux
 
-⚠️ Note: This entire repo _only_ runs on Linux. You can rent a VM, but it must support virtualization (ie. Google Cloud, Digital Ocean, EC2).
+⚠️ This entire repo _only_ runs on Linux. You can rent a VM, but it must support virtualization (ie. Google Cloud, Digital Ocean, EC2).
+
+ℹ️ You can skip this and just run all the defaults without issue. I'm just adding context below in case you want to make custom modifications.
 
 ## Basic setup & pre-reqs
 1. Download the Linux kernel binary via option `1` of the wizard
