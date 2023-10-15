@@ -2,6 +2,10 @@
 
 Simplifying the Firecracker VM setup process. Inspired by [gruchalski](https://gruchalski.com/).
 
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=ed8d462f1268&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
+
+I'm testing Firecracker micro-VMs on Digital Ocean. If you feel my scripts have simplified your development, feel free to use my DO referral link above. 
+
 # Usage
 
 ```sh
