@@ -6,14 +6,16 @@ CONFIG_LOCATION=/firecracker/configs
 
 download_kernel() {
     print_message "🐧️ Downloading Linux kernel binary..."
-    curl -fsSL -o $KERNEL_LOCATION/kernel.bin https://s3.amazonaws.com/spec.ccfc.min/img/hello/kernel/hello-vmlinux.bin
-    print_message "✅ Kernel binary has downloaded and been written to $KERNEL_LOCATION"
+    ARCH="$(uname -m)"
+    wget -O $KERNEL_LOCATION/kernel https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.5/${ARCH}/vmlinux-5.10.186
+    print_message "✅ Kernel binary has downloaded and been written to $KERNEL_LOCATION/kernel"
 }
 
 # Creates the ext4 filesystem for the VM
 # You can think of this similar to a Docker image - which is what we build the fs from!
 create_fs() {
     print_message "💿 Preparing filesystem preparation..."
+    cp $PWD/fs/rootfs.Dockerfile $FILESYSTEM_LOCATION/Dockerfile
     . $PWD/fs/fs.sh
 }
 
@@ -55,7 +57,8 @@ install_docker() {
 # Generates the Firecracker configuration file
 setup_cfg() {
     source $PWD/config/launch.sh
-    gen_config
+    print_message "Configuring VM with kernel path of $KERNEL_LOCATION/kernel & $FILESYSTEM_LOCATION/alpine-base-root.ext4"
+    gen_config $FILESYSTEM_LOCATION $KERNEL_LOCATION
     print_message "✅ Configuration JSON written to $CONFIG_LOCATION/alpine-config.json"
 }
 
@@ -104,9 +107,19 @@ check_root() {
 }
 
 clear
+# sudo only for this script!
+check_root
+
+# pre-gen the necessary directories
+print_message "⚠️ Creating the necessary directories underneath /firecracker/*"
 mkdir -p /firecracker/{kernel,fs,configs,releases}
+
+# USER needs r/w privleges for /dev/kvm
+print_message "⚠️ Installing the acl package before we begin so we can set permissions for /dev/kvm"
+sudo apt-get install -y acl
+sudo setfacl -m u:${USER}:rw /dev/kvm
+
 while true; do
-    check_root
     display_menu
     read -p "Pick a number ➡️ " choice
     case $choice in
