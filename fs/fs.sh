@@ -2,9 +2,9 @@
 
 set -eu
 build_dir="/tmp/alpine-build"
-dockerfile="$PWD/fs/rootfs.Dockerfile"
+dockerfile="/firecracker/fs/Dockerfile"
 filesystem_target="/firecracker/fs/alpine-base-root.ext4"
-key_file="alpine"
+key_file="hacker"
 image_tag="local/alpine-base:latest"
 pre_build_dir=$(pwd)
 
