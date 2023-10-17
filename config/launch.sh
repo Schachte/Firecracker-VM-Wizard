@@ -55,6 +55,8 @@ function gen_config() {
     sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     sudo iptables -A FORWARD -i $tap_name -o $IFNAME -j ACCEPT
 
+
+
     echo "✅ TAP network created"
 
     cat <<EOF > /firecracker/configs/alpine-config.json

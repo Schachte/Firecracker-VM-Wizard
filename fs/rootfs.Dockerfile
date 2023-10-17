@@ -1,6 +1,6 @@
 FROM alpine:3.13
 RUN apk update \
-	&& apk add openrc openssh sudo util-linux \
+	&& apk add openrc openssh sudo util-linux postgresql \
 	&& ssh-keygen -A \
 	&& mkdir -p /home/alpine/.ssh \
 	&& addgroup -S alpine && adduser -S alpine -G alpine -h /home/alpine -s /bin/sh \
@@ -12,7 +12,8 @@ RUN apk update \
 	&& rc-update add devfs boot \
 	&& rc-update add procfs boot \
 	&& rc-update add sysfs boot \
-	&& rc-update add local default
+	&& rc-update add local default \
+	&& rc-update add postgresql default
 COPY ./key.pub /home/alpine/.ssh/authorized_keys
 RUN chown -R alpine:alpine /home/alpine \
 	&& chmod 0740 /home/alpine \
@@ -21,4 +22,4 @@ RUN chown -R alpine:alpine /home/alpine \
 	&& mkdir -p /run/openrc \
 	&& touch /run/openrc/softlevel \
 	&& rc-update add sshd \
-        && echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config
+	&& echo 'AllowTcpForwarding yes' >> /etc/ssh/sshd_config
