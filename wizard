@@ -86,7 +86,8 @@ display_menu() {
     echo "4) Setup Firecracker filesystem"
     echo "5) Setup Firecracker config JSON"
     echo "6) Run Firecracker"
-    echo "7) Exit"
+    echo "7) ✨ Setup everything"
+    echo "8) Exit"
 }
 
 print_message() {
@@ -97,6 +98,16 @@ print_message() {
     echo "$dashes"
     echo "$message"
     echo "$dashes"
+}
+
+setup_everything() {
+    print_message "EXPERIMENTAL: Automating the entire setup process!"
+    download_kernel
+    install_fc
+    install_docker
+    create_fs
+    setup_cfg
+    print_message "✅ Setup complete - You may now run Firecracker from the wizard menu"
 }
 
 check_root() {
@@ -129,7 +140,8 @@ while true; do
         4) create_fs ;;
         5) setup_cfg ;;
         6) run_fc ;;
-        7) break ;;
+        7) setup_everything ;;
+        8) break ;;
         *) echo "Invalid option, please try again." ;;
     esac
 done
