@@ -1,8 +1,7 @@
 FROM alpine:3.13
 
-RUN apk update
+RUN apk update && apk add postgresql
 USER postgres
-
 RUN chmod 0700 /var/lib/postgresql/data &&\
 	initdb /var/lib/postgresql/data &&\
 	echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
@@ -12,7 +11,7 @@ RUN chmod 0700 /var/lib/postgresql/data &&\
 	psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD 'password';"
 
 USER root
-RUN apk add openrc openssh sudo util-linux postgresql \
+RUN apk add openrc openssh sudo util-linux \
 	&& ssh-keygen -A \
 	&& mkdir -p /home/alpine/.ssh \
 	&& addgroup -S alpine && adduser -S alpine -G alpine -h /home/alpine -s /bin/sh \
