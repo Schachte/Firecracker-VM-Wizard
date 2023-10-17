@@ -1,6 +1,18 @@
 FROM alpine:3.13
-RUN apk update \
-	&& apk add openrc openssh sudo util-linux postgresql \
+
+RUN apk update
+USER postgres
+
+RUN chmod 0700 /var/lib/postgresql/data &&\
+	initdb /var/lib/postgresql/data &&\
+	echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/data/pg_hba.conf &&\
+	echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf &&\
+	pg_ctl start &&\
+	psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'main'" | grep -q 1 || psql -U postgres -c "CREATE DATABASE main" &&\
+	psql -c "ALTER USER postgres WITH ENCRYPTED PASSWORD 'password';"
+
+USER root
+RUN apk add openrc openssh sudo util-linux postgresql \
 	&& ssh-keygen -A \
 	&& mkdir -p /home/alpine/.ssh \
 	&& addgroup -S alpine && adduser -S alpine -G alpine -h /home/alpine -s /bin/sh \
